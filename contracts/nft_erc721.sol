@@ -1099,11 +1099,7 @@ contract KeyboardNFT is ERC721URIStorage {
     }
 
     modifier isWhiteListedorOwner(){
-        if(owner == msg.sender || whiteListed[msg.sender]){
-
-        }else{
-            revert("Only owner or whiteListed members allowed");
-        }
+        require(owner == msg.sender || whiteListed[msg.sender],"Only owner or whiteListed members allowed");
         _;
     }
 
@@ -1118,8 +1114,8 @@ contract KeyboardNFT is ERC721URIStorage {
 
     function addToWhiteList(address member) onlyOwner external {
         require(!whiteListed[member],"memebr already exist");
-        require(owner == member,"Owner cannot be whitlisted");
-
+        require(owner != member,"Owner cannot be whitlisted");
+        whiteListed[member]= true;
     }
 
     function awardItem(address player, string memory tokenURI)
