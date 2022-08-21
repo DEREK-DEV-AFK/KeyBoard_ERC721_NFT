@@ -1089,6 +1089,25 @@ contract KeyboardNFT is ERC721URIStorage {
     address public owner;
     mapping(address => bool) whiteListed;
 
+    enum KeyboardKind { 
+	  SixtyPercent, 
+	  SeventyFivePercent,
+      EightyPercent, 
+	  Iso105 
+  }
+
+    struct Keyboard {
+    KeyboardKind kind; 
+    // ABS = false, PBT = true
+    bool isPBT;
+    // tailwind filters to layer over
+    string filter;
+    // user who created it!!1
+    address owner;
+  }
+
+    Keyboard[] public mintedKeyboards;
+
     constructor() ERC721("Keyboard", "KNFT") {
         owner = msg.sender;
     }
@@ -1118,7 +1137,7 @@ contract KeyboardNFT is ERC721URIStorage {
         whiteListed[member]= true;
     }
 
-    function awardItem(address player, string memory tokenURI)
+    function awardItem(address player, string memory tokenURI,KeyboardKind _kind,bool _isPBT,string calldata _filter)
         isWhiteListedorOwner
         ReentrancyGuard
         public
@@ -1128,7 +1147,18 @@ contract KeyboardNFT is ERC721URIStorage {
         _mint(player, newItemId);
         _setTokenURI(newItemId, tokenURI);
         _tokenIds.increment();
+        Keyboard memory newKeyboard = Keyboard({
+            kind: _kind,
+            isPBT: _isPBT,
+            filter: _filter,
+            owner: player 
+        });
+        mintedKeyboards.push(newKeyboard);
         return newItemId;
+    }
+
+    function getKeyboards() view public returns(Keyboard[] memory) {
+        return mintedKeyboards;
     }
 
     function updateURI(uint256 tokenID, string calldata tokenURI) onlyOwner external {
