@@ -1,6 +1,6 @@
 const { loadFixture} = require("@nomicfoundation/hardhat-network-helpers");
-const { anyValue } = require("@nomicfoundation/hardhat-chai-matchers/withArgs");
 const { expect } = require("chai");
+const { ethers } = require("ethers");
 
 describe("Setting up", function () {
   // We define a fixture to reuse the same setup in every test.
@@ -39,7 +39,7 @@ describe("Setting up", function () {
 
     it("should allow owner",async function (){
       const {hardhatToken, owner} = await loadFixture(deployTokenFixture);
-      await expect(await hardhatToken.awardItem(owner.address,"1 nft", 0, false, "abc")).to.be.equal(0);
+      await expect(await hardhatToken.awardItem(owner.address,"1 nft", 0, false, "abc")).to.returned(0);
     });
   });
 
